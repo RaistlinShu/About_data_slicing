@@ -26,10 +26,6 @@ for col in set(adult.columns) - set(adult.describe().columns):
 adult_data = adult.drop(columns=['income'])
 adult_label = adult.income
 
-print(adult['income'])
-# res = adult['gender'].isin(['Male'])
-# print(adult['gender'].isin(['Male']))
-# print(adult[~res])
 
 # res = divide_slice(adult)
 # print(res)
