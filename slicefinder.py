@@ -54,5 +54,6 @@ def slice_finder(data, features_dict, model, avg_acc, scaler):
             '''
             model_eval(target_value)
             '''
+    return slices
 
 # slice_finder()
