@@ -29,7 +29,7 @@ def slice_finder(data, features_dict, model, avg_acc, scaler):
         # p is the combinations of f_nums features, eg. ('age', 'gender')
         for p in itertools.combinations(features, f_num):
             #  eg. q = ((17, 20), 'Male')
-            for q in itertools.product(features_dict[p[k]] for k in range(f_num)):
+            for q in itertools.product(*[features_dict[p[k]] for k in range(f_num)]):
                 target_data_idx = pd.Series([True for i in range(data.shape[0])])
                 for i in range(f_num):
                     if isinstance(q[i], tuple):  # Numerical feature
