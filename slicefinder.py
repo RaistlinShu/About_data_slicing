@@ -21,7 +21,7 @@ def score_function(data_slice, label, model, avg_acc, scaler):
 
 
 def slice_finder(data, features_dict, model, avg_acc, scaler):
-    slices = set()
+    slices = []
     # ['age', 'workclass', 'fnlwgt', 'education', .....]
     features = list(features_dict.keys())
     # Choose f_num features
@@ -50,7 +50,7 @@ def slice_finder(data, features_dict, model, avg_acc, scaler):
                                   model=model,
                                   avg_acc=avg_acc,
                                   scaler=scaler):
-                    slices.add({p[num]: q[num] for num in range(f_num)})
+                    slices.append({p[num]: q[num] for num in range(f_num)})
             '''
             model_eval(target_value)
             '''
