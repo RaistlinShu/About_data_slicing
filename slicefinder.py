@@ -3,6 +3,45 @@ import pandas as pd
 from utils import model_eval, data_normalization
 
 
+def robustness_measurement(data, label, ori_pred, model, scaler, features_dict):
+    wa = 0
+    ac = 0
+    robust_num = 1
+    features_num = len(features_dict)
+    features = list(features_dict.keys())
+
+    for i in range(data.shape[0]):
+        for j in range(3):
+            robust_features = random.sample(features, robust_num)
+            for feature in robust_features:
+                if isinstance(features_dict[feature][0], tuple):
+                    for k in range(len(features_dict[feature])):
+                        if data.iloc[i][feature] >= min(features_dict[feature][k]) & \
+                                data.iloc[i][feature] < max(features_dict[feature][k]):
+                            data.iloc[i][feature] = \
+                                data.iloc[i][feature] + abs(features_dict[feature][0] - features_dict[feature][1])
+                else:
+                    original_feature = data.iloc[i][feature]
+                    while data.iloc[i][feature] == original_feature:
+                        data.iloc[i][feature] = random.sample(features_dict[feature][0], 1)
+
+            data_data = data[i: i + 1].drop(columns=[label])
+
+            data_cat_1hot = pd.get_dummies(data_data.select_dtypes('category'))
+            data_non_cat = data_data.select_dtypes(exclude='category')
+
+            data_data_1hot = pd.concat([data_non_cat, data_cat_1hot], axis=1, join='inner')
+
+            _, test_data = data_normalization(scaler=scaler,
+                                              train_data=data_data_1hot,
+                                              test_data=data_data_1hot)
+            pred = model.predict(test_data)[0]
+            if pred == ori_pred[i]:
+                ac = ac + 1
+            else:
+                wa = wa + 1
+    return ac / wa + ac
+
 # import time
 def score_function(data_slice, label, model, avg_acc, scaler):
     slice_data = data_slice.drop(columns=[label])
