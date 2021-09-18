@@ -4,10 +4,25 @@ from sklearn.preprocessing import StandardScaler
 
 def model_eval(actual, pred):
     confusion = pd.crosstab(actual, pred, rownames=['Actual'], colnames=['Predicted'])
-    TP = confusion.loc['>50K', '>50K']
-    TN = confusion.loc['<=50K', '<=50K']
-    FP = confusion.loc['<=50K', '>50K']
-    FN = confusion.loc['>50K', '<=50K']
+    confusion = pd.crosstab(actual, pred, rownames=['Actual'], colnames=['Predicted'])
+    # TP = confusion.loc['>50K', '>50K']
+    # TN = confusion.loc['<=50K', '<=50K']
+    # FP = confusion.loc['<=50K', '>50K']
+    # FN = confusion.loc['>50K', '<=50K']
+    TP = 0
+    TN = 0
+    FP = 0
+    FN = 0
+    if '>50K' in confusion.index:
+        if '>50K' in confusion.columns:
+            TP = confusion.loc['>50K', '>50K']
+        if '<=50K' in confusion.columns:
+            FN = confusion.loc['>50K', '<=50K']
+    if '<=50K' in confusion.columns:
+        if '>50K' in confusion.columns:
+            FP = confusion.loc['<=50K', '>50K']
+        if '<=50K' in confusion.columns:
+            TN = confusion.loc['<=50K', '<=50K']
 
     accuracy = (TP + TN) / (TP + FN + FP + TN)
     precision = TP / (TP + FP)
